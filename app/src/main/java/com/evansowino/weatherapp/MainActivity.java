@@ -1,9 +1,17 @@
 package com.evansowino.weatherapp;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -25,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private String defaultLocation;
     private String getDefaultLocationKey;
     private String weatherURLTail;
+    private CurrentWeather mCurrentWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +49,19 @@ public class MainActivity extends AppCompatActivity {
         getDefaultLocationKey = res.getString(R.string.default_location_key);
         weatherURLTail = res.getString(R.string.weather_url_tail);
 
-        sendRequest();
+        if (isNetworkAvailable()) {
+            sendRequest();
+        } else {
+            Toast.makeText(this,
+                    R.string.sorry_network_unavailable, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     private void sendRequest() {
@@ -56,15 +77,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
-                    Log.v(TAG, response.body().string());
-                    if (!response.isSuccessful()) {
+                    String data = response.body().string();
+                    Log.v(TAG, data);
+                    if (response.isSuccessful()) {
+                        mCurrentWeather = getCurrentDetails(data);
+                        Log.v(TAG, mCurrentWeather.toString());
+                    } else {
                         alertUserABoutError();
+
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "IO Exception caught: ", e);
+                } catch (JSONException e) {
+                    Log.e(TAG, "JSON Exception caught: ", e);
                 }
             }
         });
+    }
+
+    private CurrentWeather getCurrentDetails(String data) throws JSONException {
+        JSONArray forecast = new JSONArray(data);
+        JSONObject forecastData = forecast.getJSONObject(0);
+
+        long time = forecastData.getLong(getString(R.string.epoch_time));
+        String summary = forecastData.getString(getString(R.string.weather_text));
+        boolean isDayTime = forecastData.getBoolean(getString(R.string.is_day_time));
+        int icon = forecastData.getInt(getString(R.string.weather_icon));
+
+        JSONObject metric = forecastData.getJSONObject(getString(R.string.temperature))
+                                        .getJSONObject(getString(R.string.metric));
+        String value = metric.getString(getString(R.string.value));
+        String unit = metric.getString(getString(R.string.unit));
+
+        return new CurrentWeather(time, summary, icon, isDayTime,
+                    new Temperature(getString(R.string.metric), value, unit));
     }
 
     private void alertUserABoutError() {

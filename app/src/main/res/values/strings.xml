@@ -18,6 +18,15 @@
     <string name="error_title">Oops! Sorry</string>
     <string name="error_message">There was an error. Please try again</string>
     <string name="error_btn_ok_text">OK</string>
+    <string name="sorry_network_unavailable">Sorry, the network is unavailable</string>
+    <string name="epoch_time">EpochTime</string>
+    <string name="weather_text">WeatherText</string>
+    <string name="is_day_time">IsDayTime</string>
+    <string name="weather_icon">WeatherIcon</string>
+    <string name="temperature">Temperature</string>
+    <string name="metric">Metric</string>
+    <string name="value">Value</string>
+    <string name="unit">Unit</string>
 </resources>
 
 <!--
