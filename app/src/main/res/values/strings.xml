@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Weather App</string>
+
+    <!--Weather API-->
+    <string name="location_url">https://apidev.accuweather.com/locations/v1/search?q=</string>
+    <string name="weather_url">https://apidev.accuweather.com/currentconditions/v1/</string>
+    <string name="weather_url_tail">.json?language=en&amp;apikey=hoArfRosT1215</string>
+    <string name="api_key">&amp;apikey=hoArfRosT1215</string>
+</resources>
