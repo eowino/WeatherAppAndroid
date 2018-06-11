@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.TimeZone;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -108,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
                                         .getJSONObject(getString(R.string.metric));
         String value = metric.getString(getString(R.string.value));
         String unit = metric.getString(getString(R.string.unit));
+
+        Log.d(TAG, TimeZone.getTimeZone("GMT").getDisplayName());
 
         return new CurrentWeather(time, summary, icon, isDayTime,
                     new Temperature(getString(R.string.metric), value, unit));
