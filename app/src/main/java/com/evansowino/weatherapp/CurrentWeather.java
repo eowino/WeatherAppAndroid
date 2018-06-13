@@ -19,6 +19,8 @@ public class CurrentWeather {
         this.temperatureType = temperatureType;
     }
 
+    public CurrentWeather() {
+    }
 
     public long getTime() {
         return time;

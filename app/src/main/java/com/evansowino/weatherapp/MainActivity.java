@@ -2,12 +2,15 @@ package com.evansowino.weatherapp;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.evansowino.weatherapp.databinding.ActivityMainBinding;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,11 +38,14 @@ public class MainActivity extends AppCompatActivity {
     private String getDefaultLocationKey;
     private String weatherURLTail;
     private CurrentWeather mCurrentWeather;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(MainActivity.this,
+                R.layout.activity_main);
+
 
         Resources res = getResources();
         apiKey = res.getString(R.string.api_key);
@@ -82,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.v(TAG, data);
                     if (response.isSuccessful()) {
                         mCurrentWeather = getCurrentDetails(data);
+                        binding.setWeather(mCurrentWeather);
                         Log.v(TAG, mCurrentWeather.toString());
                     } else {
                         alertUserABoutError();

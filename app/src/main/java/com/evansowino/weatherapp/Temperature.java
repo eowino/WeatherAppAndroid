@@ -11,6 +11,9 @@ public class Temperature {
         this.unit = unit;
     }
 
+    public Temperature() {
+    }
+
     public String getType() {
         return type;
     }
